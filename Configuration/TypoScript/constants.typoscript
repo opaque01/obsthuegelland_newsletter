@@ -1,0 +1,20 @@
+# Obsthuegelland Newsletter (direct_mail)
+plugin.tx_obsthuegellandnewsletter {
+  # PageType for HTML newsletter rendering (used by direct_mail to fetch the HTML)
+  typeNum = 1485434607
+
+  # Base URL of the website (used to build absolute links in email output)
+  baseUrl = https://obsthuegelland.at/
+
+  # Page id where registeraddress handles unsubscribe (hash/action/controller params)
+  unsubscribePid = 259
+
+  # Absolute URL for your header/banner image (recommended for email)
+  headerImageUrl = https://obsthuegelland.at/fileadmin/newsletter/header.jpg
+
+  # Width of the main newsletter container (px)
+  containerWidth = 600
+
+  # Divider color
+  dividerColor = #7c9a54
+}
