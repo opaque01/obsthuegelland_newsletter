@@ -1,17 +1,22 @@
 <?php
+
+declare(strict_types=1);
+
 $EM_CONF[$_EXTKEY] = [
-    'title' => 'Obsthuegelland Newsletter',
-    'description' => 'Table-based newsletter templates for direct_mail using fluid_styled_content (TYPO3 12 LTS).',
+    'title' => 'Obsthuegelland Newsletter (direct_mail tables)',
+    'description' => 'Tabellenbasierte Newsletter-Templates (Fluid + fluid_styled_content Overrides) für direct_mail. Unsubscribe via registeraddress/registeraddress_logger.',
     'category' => 'templates',
-    'author' => 'Opaque Design / Walter Kruml',
-    'author_email' => '',
     'state' => 'stable',
-    'clearCacheOnLoad' => 0,
+    'clearCacheOnLoad' => 1,
+    'author' => 'Walter Kruml',
+    'author_email' => 'info@opaque.at',
+    'author_company' => 'Opaque Design',
     'version' => '1.0.0',
     'constraints' => [
         'depends' => [
             'typo3' => '12.4.0-12.4.99',
             'fluid_styled_content' => '12.4.0-12.4.99',
+            'rte_ckeditor' => '12.4.0-12.4.99',
         ],
         'conflicts' => [],
         'suggests' => [

@@ -1,0 +1,111 @@
+<f:if condition="{files}">
+  <f:variable name="cols" value="{columns}" />
+
+  <f:switch expression="{cols}">
+    <!-- ===================================================== -->
+    <!-- 2 Columns -->
+    <!-- ===================================================== -->
+    <f:case value="2">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%;">
+        <f:for each="{files}" as="file" iteration="it">
+          <f:if condition="{it.isOdd}"><tr></f:if>
+
+          <td valign="top" style="padding:0 5px 10px;width:50%;">
+            <f:variable name="src" value="{f:uri.image(image: file, maxWidth: 330, absolute: 1)}" />
+            <img src="{src}" alt="{file.originalResource.alternative}" style="display:block;width:100%;max-width:330px;height:auto;border:0;" />
+          </td>
+
+          <f:if condition="{it.isEven} || {it.isLast}">
+            <f:if condition="{it.isLast} && {it.isOdd}">
+              <td valign="top" style="padding:0 5px 10px;width:50%;">&nbsp;</td>
+            </f:if>
+            </tr>
+          </f:if>
+        </f:for>
+      </table>
+    </f:case>
+
+    <!-- ===================================================== -->
+    <!-- 3 Columns -->
+    <!-- ===================================================== -->
+    <f:case value="3">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%;">
+        <f:for each="{files}" as="file" iteration="it">
+          <f:cycle name="gallery3" values="{0:'1',1:'2',2:'3'}" as="col">
+            <f:if condition="{col} == '1'"><tr></f:if>
+
+            <td valign="top" style="padding:0 5px 10px;width:33.333%;">
+              <f:variable name="src" value="{f:uri.image(image: file, maxWidth: 220, absolute: 1)}" />
+              <img src="{src}" alt="{file.originalResource.alternative}" style="display:block;width:100%;max-width:220px;height:auto;border:0;" />
+            </td>
+
+            <f:if condition="{col} == '3' || {it.isLast}">
+              <f:if condition="{it.isLast}">
+                <f:if condition="{col} == '1'">
+                  <td valign="top" style="padding:0 5px 10px;width:33.333%;">&nbsp;</td>
+                  <td valign="top" style="padding:0 5px 10px;width:33.333%;">&nbsp;</td>
+                </f:if>
+                <f:if condition="{col} == '2'">
+                  <td valign="top" style="padding:0 5px 10px;width:33.333%;">&nbsp;</td>
+                </f:if>
+              </f:if>
+              </tr>
+            </f:if>
+          </f:cycle>
+        </f:for>
+      </table>
+    </f:case>
+
+    <!-- ===================================================== -->
+    <!-- 4 Columns -->
+    <!-- ===================================================== -->
+    <f:case value="4">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%;">
+        <f:for each="{files}" as="file" iteration="it">
+          <f:cycle name="gallery4" values="{0:'1',1:'2',2:'3',3:'4'}" as="col">
+            <f:if condition="{col} == '1'"><tr></f:if>
+
+            <td valign="top" style="padding:0 5px 10px;width:25%;">
+              <f:variable name="src" value="{f:uri.image(image: file, maxWidth: 165, absolute: 1)}" />
+              <img src="{src}" alt="{file.originalResource.alternative}" style="display:block;width:100%;max-width:165px;height:auto;border:0;" />
+            </td>
+
+            <f:if condition="{col} == '4' || {it.isLast}">
+              <f:if condition="{it.isLast}">
+                <f:if condition="{col} == '1'">
+                  <td valign="top" style="padding:0 5px 10px;width:25%;">&nbsp;</td>
+                  <td valign="top" style="padding:0 5px 10px;width:25%;">&nbsp;</td>
+                  <td valign="top" style="padding:0 5px 10px;width:25%;">&nbsp;</td>
+                </f:if>
+                <f:if condition="{col} == '2'">
+                  <td valign="top" style="padding:0 5px 10px;width:25%;">&nbsp;</td>
+                  <td valign="top" style="padding:0 5px 10px;width:25%;">&nbsp;</td>
+                </f:if>
+                <f:if condition="{col} == '3'">
+                  <td valign="top" style="padding:0 5px 10px;width:25%;">&nbsp;</td>
+                </f:if>
+              </f:if>
+              </tr>
+            </f:if>
+          </f:cycle>
+        </f:for>
+      </table>
+    </f:case>
+
+    <!-- ===================================================== -->
+    <!-- Default (1 Column) -->
+    <!-- ===================================================== -->
+    <f:defaultCase>
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%;">
+        <f:for each="{files}" as="file">
+          <tr>
+            <td valign="top" style="padding:0 0 10px;">
+              <f:variable name="src" value="{f:uri.image(image: file, maxWidth: 660, absolute: 1)}" />
+              <img src="{src}" alt="{file.originalResource.alternative}" style="display:block;width:100%;max-width:660px;height:auto;border:0;" />
+            </td>
+          </tr>
+        </f:for>
+      </table>
+    </f:defaultCase>
+  </f:switch>
+</f:if>

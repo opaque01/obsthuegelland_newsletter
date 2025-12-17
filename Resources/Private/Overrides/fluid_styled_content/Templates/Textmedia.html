@@ -1,0 +1,78 @@
+<f:layout name="Default" />
+<f:section name="Main">
+  <f:render partial="Email/Header" arguments="{data:data}" />
+
+  <f:switch expression="{data.imageorient}">
+    <!-- Text links, Media rechts -->
+    <f:case value="18">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%;">
+        <tr>
+          <td valign="top" style="padding:0 10px 10px 0;width:60%;">
+            <f:format.html parseFuncTSPath="lib.parseFunc_RTE">{data.bodytext}</f:format.html>
+          </td>
+          <td valign="top" style="padding:0 0 10px 10px;width:40%;">
+            <f:render partial="Email/Gallery" arguments="{files: files, columns: 1}" />
+          </td>
+        </tr>
+      </table>
+    </f:case>
+    <f:case value="26">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%;">
+        <tr>
+          <td valign="top" style="padding:0 10px 10px 0;width:60%;">
+            <f:format.html parseFuncTSPath="lib.parseFunc_RTE">{data.bodytext}</f:format.html>
+          </td>
+          <td valign="top" style="padding:0 0 10px 10px;width:40%;">
+            <f:render partial="Email/Gallery" arguments="{files: files, columns: 1}" />
+          </td>
+        </tr>
+      </table>
+    </f:case>
+
+    <!-- Media links, Text rechts -->
+    <f:case value="17">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%;">
+        <tr>
+          <td valign="top" style="padding:0 10px 10px 0;width:40%;">
+            <f:render partial="Email/Gallery" arguments="{files: files, columns: 1}" />
+          </td>
+          <td valign="top" style="padding:0 0 10px 10px;width:60%;">
+            <f:format.html parseFuncTSPath="lib.parseFunc_RTE">{data.bodytext}</f:format.html>
+          </td>
+        </tr>
+      </table>
+    </f:case>
+    <f:case value="25">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%;">
+        <tr>
+          <td valign="top" style="padding:0 10px 10px 0;width:40%;">
+            <f:render partial="Email/Gallery" arguments="{files: files, columns: 1}" />
+          </td>
+          <td valign="top" style="padding:0 0 10px 10px;width:60%;">
+            <f:format.html parseFuncTSPath="lib.parseFunc_RTE">{data.bodytext}</f:format.html>
+          </td>
+        </tr>
+      </table>
+    </f:case>
+
+    <!-- Bilder unter dem Text -->
+    <f:case value="8">
+      <f:format.html parseFuncTSPath="lib.parseFunc_RTE">{data.bodytext}</f:format.html>
+      <f:render partial="Email/Gallery" arguments="{files: files, columns: data.imagecols}" />
+    </f:case>
+    <f:case value="9">
+      <f:format.html parseFuncTSPath="lib.parseFunc_RTE">{data.bodytext}</f:format.html>
+      <f:render partial="Email/Gallery" arguments="{files: files, columns: data.imagecols}" />
+    </f:case>
+    <f:case value="10">
+      <f:format.html parseFuncTSPath="lib.parseFunc_RTE">{data.bodytext}</f:format.html>
+      <f:render partial="Email/Gallery" arguments="{files: files, columns: data.imagecols}" />
+    </f:case>
+
+    <!-- Default: Bilder oberhalb -->
+    <f:defaultCase>
+      <f:render partial="Email/Gallery" arguments="{files: files, columns: data.imagecols}" />
+      <f:format.html parseFuncTSPath="lib.parseFunc_RTE">{data.bodytext}</f:format.html>
+    </f:defaultCase>
+  </f:switch>
+</f:section>

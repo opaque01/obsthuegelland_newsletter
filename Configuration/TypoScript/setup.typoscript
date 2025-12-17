@@ -1,129 +1,135 @@
-#############################################
-# Obsthuegelland Newsletter (direct_mail)
-#############################################
+# =====================================================================
+# Obsthuegelland Newsletter TypoScript (TYPO3 12.4 + direct_mail)
+# - Rendering über eigenes PAGE-Objekt (typeNum != 0), damit die Website
+#   nicht beeinflusst wird.
+# - Tabellenbasierter Wrapper + fluid_styled_content Overrides (nur für
+#   Newsletter-TypeNum)
+# =====================================================================
 
-# Only affect the special "newsletter" pageType (typeNum)
-[request.getPageArguments().getPageType() == {$plugin.tx_obsthuegellandnewsletter.typeNum}]
-
-config {
-  # Important for direct_mail categories + tracking
-  insertDmailerBoundaries = 1
-
-  # Email output should not rely on relative URLs
-  forceAbsoluteUrls = 1
-  absRefPrefix = {$plugin.tx_obsthuegellandnewsletter.baseUrl}
-
-  # Do not generate XHTML-cleaned output (some email clients are picky)
-  xhtml_cleaning = 0
-
-  # No caching for newsletter previews
-  no_cache = 1
-  disableAllHeaderCode = 0
-  admPanel = 0
-}
-
-# Use email-safe content element templates (override fluid_styled_content paths)
-lib.contentElement {
-  templateRootPaths.100 = EXT:obsthuegelland_newsletter/Resources/Private/ContentElements/Templates/
-  partialRootPaths.100  = EXT:obsthuegelland_newsletter/Resources/Private/ContentElements/Partials/
-  layoutRootPaths.100   = EXT:obsthuegelland_newsletter/Resources/Private/ContentElements/Layouts/
-}
-
-# Keep this OFF - fluid_styled_content default CSS is not email-safe
-plugin.tx_fluidstyledcontent._CSS_DEFAULT_STYLE >
-
-[end]
-
-#############################################
-# direct_mail + registeraddress integration
-#############################################
-
-# This setting is used by direct_mail to provide the marker ###USER_registeraddresshash###
-# (Only works if the corresponding userFunc exists in your registeraddress_logger version)
+# -------------------------------------------------
+# direct_mail Recipient Marker: ###USER_registeraddresshash###
+# -------------------------------------------------
 plugin.tx_directmail {
   userFunc {
     registeraddresshash = Webartists\RegisteraddressLogger\Hooks\DirectMailHook->getUserHash
   }
 }
 
-#############################################
-# Reusable libs used by the newsletter wrapper
-#############################################
+# -------------------------------------------------
+# fluid_styled_content Overrides: nur für Newsletter typeNum
+# -------------------------------------------------
+[traverse(request.getQueryParams(), 'type') == {$plugin.tx_obsthuegellandnewsletter.newsletterTypeNum}]
+  plugin.tx_fluidstyledcontent.view {
+    templateRootPaths {
+      999 = EXT:obsthuegelland_newsletter/Resources/Private/Overrides/fluid_styled_content/Templates/
+    }
+    partialRootPaths {
+      999 = EXT:obsthuegelland_newsletter/Resources/Private/Overrides/fluid_styled_content/Partials/
+    }
+  }
+[end]
 
+# -------------------------------------------------
+# Hilfs-Libs
+# -------------------------------------------------
 lib.headertitle = TEXT
 lib.headertitle.data = page:title
 
-lib.headerImageUrl = TEXT
-lib.headerImageUrl.value = {$plugin.tx_obsthuegellandnewsletter.headerImageUrl}
+# Headerimage: nimmt levelmedia (wie in deinen Files)
+lib.headerimage = IMAGE
+lib.headerimage {
+  file {
+    width = 686c
+    height = 240c
+    import.data = levelmedia:-1, slide
+    treatIdAsReference = 1
+    import.listNum = 0
+  }
+  altText.data = page:title
+  titleText.data = page:title
+  params = style="display:block;width:100%;max-width:686px;height:auto;border:0;" class="mobile-full-width"
+  layoutKey = default
+  layout {
+    default {
+      element = <img src="###SRC###" width="###WIDTH###" height="###HEIGHT###" ###PARAMS### ###ALTPARAMS### ###BORDER### ###SELFCLOSINGTAGSLASH###>
+    }
+  }
+}
 
-# Unsubscribe link compatible with registeraddress (+ registeraddress_logger will log)
-# Marker ###USER_registeraddresshash### is resolved by direct_mail when sending.
+# Unsubscribe Link (registeraddress + registeraddress_logger)
 lib.unsubscribe = TEXT
 lib.unsubscribe {
+  value = hier
   typolink {
     parameter = {$plugin.tx_obsthuegellandnewsletter.unsubscribePid}
     additionalParams = &tx_registeraddress_registerform[hash]=###USER_registeraddresshash###&tx_registeraddress_registerform[action]=delete&tx_registeraddress_registerform[controller]=Address
-    returnLast = url
-    forceAbsoluteUrl = 1
+    no_cache = 1
+    ATagParams = style="color:#475830;text-decoration:underline;font-weight:bold;"
   }
-  wrap = <a href="|" style="color:#7c9a54; text-decoration:underline;">Newsletter abmelden</a>
 }
 
-# Render main column content (colPos=0 by default)
+# Newsletter Content (colPos 0)
 lib.newsletterContent = CONTENT
 lib.newsletterContent {
   table = tt_content
   select {
     pidInList = this
-    orderBy = sorting
     where = colPos = 0
+    orderBy = sorting
   }
-  renderObj = COA
-  renderObj {
-    10 = TEXT
-    10.value = <tr><td style="padding:10px 0;" valign="top">
-    20 =< tt_content
-    30 = TEXT
-    30.value = </td></tr>
-  }
+  renderObj =< tt_content
+  renderObj.stdWrap.outerWrap = <tr><td style="padding:10px 0;font-family:Arial,Helvetica,sans-serif;font-size:16px;line-height:1.6;color:#333333;vertical-align:top;">|</td></tr>
 }
 
-#############################################
-# Newsletter PAGE object (HTML)
-#############################################
-
+# -------------------------------------------------
+# NEWSLETTER PAGE object (separater typeNum!)
+# -------------------------------------------------
 newsletter = PAGE
 newsletter {
-  typeNum = {$plugin.tx_obsthuegellandnewsletter.typeNum}
+  typeNum = {$plugin.tx_obsthuegellandnewsletter.newsletterTypeNum}
 
   config {
-    insertDmailerBoundaries = 1
-    forceAbsoluteUrls = 1
+    doctype = html5
     absRefPrefix = {$plugin.tx_obsthuegellandnewsletter.baseUrl}
-    xhtml_cleaning = 0
-    no_cache = 1
-    admPanel = 0
+    disablePrefixComment = 1
+    spamProtectEmailAddresses = 0
+    contentObjectExceptionHandler = 0
+    insertDmailerBoundaries = 1
+  }
+
+  # Keine Standard-CSS von FSC / anderen Extensions
+  plugin {
+    tx_fluidstyledcontent._CSS_DEFAULT_STYLE >
+    tx_cssstyledcontent._CSS_DEFAULT_STYLE >
+  }
+
+  # Optional: zusätzliche Inline-CSS Datei (Head <style>)
+  includeCSS {
+    newsletter = EXT:obsthuegelland_newsletter/Resources/Public/Css/newsletter_inline.css
+    newsletter {
+      inline = 1
+      forceOnTop = 1
+      disablePrefixComment = 1
+    }
   }
 
   10 = FLUIDTEMPLATE
   10 {
-    templateRootPaths.10 = EXT:obsthuegelland_newsletter/Resources/Private/Templates/
-    partialRootPaths.10  = EXT:obsthuegelland_newsletter/Resources/Private/Partials/
-    layoutRootPaths.10   = EXT:obsthuegelland_newsletter/Resources/Private/Layouts/
+    format = html
 
-    templateName = Newsletter
+    templateRootPaths {
+      10 = EXT:obsthuegelland_newsletter/Resources/Private/Newsletter/Templates/
+    }
+    partialRootPaths {
+      10 = EXT:obsthuegelland_newsletter/Resources/Private/Newsletter/Partials/
+    }
+
+    file = EXT:obsthuegelland_newsletter/Resources/Private/Newsletter/Templates/Newsletter.html
 
     variables {
-      pageTitle < lib.headertitle
-      headerImageUrl < lib.headerImageUrl
       mainContent < lib.newsletterContent
-      unsubscribeLink < lib.unsubscribe
-
-      containerWidth = TEXT
-      containerWidth.value = {$plugin.tx_obsthuegellandnewsletter.containerWidth}
-
-      dividerColor = TEXT
-      dividerColor.value = {$plugin.tx_obsthuegellandnewsletter.dividerColor}
+      newsletterTypeNum = TEXT
+      newsletterTypeNum.value = {$plugin.tx_obsthuegellandnewsletter.newsletterTypeNum}
     }
   }
 }

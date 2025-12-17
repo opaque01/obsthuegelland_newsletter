@@ -1,0 +1,7 @@
+<f:layout name="Default" />
+<f:section name="Main">
+  <f:render partial="Email/Header" arguments="{data:data}" />
+  <f:if condition="{data.bodytext}">
+    <f:format.html parseFuncTSPath="lib.parseFunc_RTE">{data.bodytext}</f:format.html>
+  </f:if>
+</f:section>
