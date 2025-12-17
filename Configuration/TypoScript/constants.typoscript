@@ -4,3 +4,6 @@ plugin.tx_obsthuegellandnewsletter {
   unsubscribePid = 259
   newsletterTypeNum = 1485434607
 }
+
+# Render newsletter via standalone PAGE object (typeNum)
+plugin.tx_obsthuegellandnewsletter.enableStandaloneNewsletterPage = 0

@@ -18,16 +18,23 @@ plugin.tx_directmail {
 # -------------------------------------------------
 # fluid_styled_content Overrides: nur für Newsletter typeNum
 # -------------------------------------------------
-[traverse(request.getQueryParams(), 'type') == {$plugin.tx_obsthuegellandnewsletter.newsletterTypeNum}]
-  plugin.tx_fluidstyledcontent.view {
-    templateRootPaths {
-      999 = EXT:obsthuegelland_newsletter/Resources/Private/Overrides/fluid_styled_content/Templates/
-    }
-    partialRootPaths {
-      999 = EXT:obsthuegelland_newsletter/Resources/Private/Overrides/fluid_styled_content/Partials/
-    }
+# -------------------------------------------------
+# FSC Email Overrides (include this static TS only in your Newsletter-SysFolder template!)
+# Overrides templates + removes FSC <div class="frame ..."> wrapper by overriding Layout "Default".
+# Docs: Overriding Fluid templates via lib.contentElement.*RootPaths
+# -------------------------------------------------
+lib.contentElement {
+  templateRootPaths {
+    999 = EXT:obsthuegelland_newsletter/Resources/Private/Overrides/fluid_styled_content/Templates/
   }
-[end]
+  partialRootPaths {
+    999 = EXT:obsthuegelland_newsletter/Resources/Private/Overrides/fluid_styled_content/Partials/
+  }
+  layoutRootPaths {
+    999 = EXT:obsthuegelland_newsletter/Resources/Private/Overrides/fluid_styled_content/Layouts/
+  }
+}
+
 
 # -------------------------------------------------
 # Hilfs-Libs
@@ -84,6 +91,7 @@ lib.newsletterContent {
 # -------------------------------------------------
 # NEWSLETTER PAGE object (separater typeNum!)
 # -------------------------------------------------
+[{$plugin.tx_obsthuegellandnewsletter.enableStandaloneNewsletterPage} == 1]
 newsletter = PAGE
 newsletter {
   typeNum = {$plugin.tx_obsthuegellandnewsletter.newsletterTypeNum}
@@ -133,3 +141,5 @@ newsletter {
     }
   }
 }
+
+[end]
