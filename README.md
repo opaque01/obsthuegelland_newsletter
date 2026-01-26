@@ -32,5 +32,3 @@ Der Abmeldelink nutzt:
 Wichtig:
 - direct_mail muss den Marker `###USER_registeraddresshash###` kennen (über `plugin.tx_directmail.userFunc.registeraddresshash`).
 - Je nach registeraddress_logger Version muss ggf. der Namespace/Hook angepasst werden.
-
-Viel Erfolg!
